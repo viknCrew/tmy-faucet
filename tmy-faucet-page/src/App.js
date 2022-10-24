@@ -7,10 +7,16 @@ function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [userAdress, setUserAdress] = useState("");
   const [userBalance, setUserBalance] = useState("");
+  const [getTmyResult,setTmyResultString] = useState("");
+  const [getTmyRequest,setTmyRequestBool] = useState(false);
 
   async function getTmy() {
-    
-
+    var response = await fetch('http://localhost:3000/api/send/?address='+{userAdress}.userAdress);
+    var json = await response.json()
+    var msg = json['msg']
+    console.log(msg)
+    setTmyResultString(msg)
+    setTmyRequestBool(true)
 
   };
 
@@ -65,20 +71,20 @@ function App() {
         }}>
 
           <div class='wrapper' style={{
-            display:'grid',
-            gridTemplateColumns:'10fr  1fr'
+            display: 'grid',
+            gridTemplateColumns: '10fr  1fr'
           }}>
             <div >
-            <img src={process.env.PUBLIC_URL + "img/wallet-logo.svg"} alt=" " />
-            <text style={{
-              fontSize: 30,
-              marginLeft: 10,
-              verticalAlign: "baseline"
-            }}>
-              /:Faucet
-            </text>
+              <img src={process.env.PUBLIC_URL + "img/wallet-logo.svg"} alt=" " />
+              <text style={{
+                fontSize: 30,
+                marginLeft: 10,
+                verticalAlign: "baseline"
+              }}>
+                /:Faucet
+              </text>
             </div>
-            
+
             <button class='row1' style={{
               backgroundColor: '#283593',
               color: 'white',
@@ -111,8 +117,6 @@ function App() {
               marginBottom: 15,
               marginTop: 15,
               fontSize: 25,
-
-
             }}>
               <text >
                 Connect with metamask
@@ -149,29 +153,38 @@ function App() {
             borderInlineColor: "#F7F8FC",
             borderBlockColor: "#F7F8FC",
             backgroundColor: "#F7F8FC",
-            justifyContent: 'center',
-            alignItems: 'center'
 
           }}>
             <div>
               <text style={{
                 fontSize: 20,
-                verticalAlign: "baseline"
+                verticalAlign: "baseline",
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}>
-                Adress: {userAdress}
+                Address: {userAdress}
               </text>
 
             </div>
             <div>
               <text style={{
                 fontSize: 20,
-                verticalAlign: "baseline"
+                verticalAlign: "baseline",
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}>
                 Balance: {userBalance}
               </text>
             </div>
 
-            <div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              {!getTmyRequest && 
               <button style=
                 {{
                   backgroundColor: '#283593',
@@ -180,10 +193,21 @@ function App() {
                   borderRadius: '5px',
                   padding: '10px 10px',
                   cursor: 'pointer',
-
                 }} onClick={getTmy} >
                 Get TMY
-              </button>
+              </button>}
+
+              {getTmyRequest && 
+              <text style={{
+                fontSize: 20,
+                verticalAlign: "baseline",
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+                Result: {getTmyResult}
+              </text>
+              }
             </div>
           </div>
         )}

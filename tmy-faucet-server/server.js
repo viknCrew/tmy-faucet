@@ -96,17 +96,24 @@ async function sendTmy(addressFromRequest) {
 
 const app = express()
 app.get('/api/send', async function (request, response) {
+  response.header('Access-Control-Allow-Origin', '*');
+  response.header('Access-Control-Allow-Methods', 'GET');
+  response.header('Access-Control-Allow-Headers', 'X-Requested-With, content-type, "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization');
   let addressFromRequest = request.query.address
   var log = await inputAdress(addressFromRequest)
-  response.send(log)
+  response.send({msg:log})
   response.end()
 })
 app.get('/api/createCollection', async function (request, response) {
   await createCollection()
   response.end()
 })
+app.get('/api/test', async function (request, response) {
+  response.header('Access-Control-Allow-Origin', '*');
+  response.header('Access-Control-Allow-Methods', 'GET');
+  response.header('Access-Control-Allow-Headers', 'X-Requested-With, content-type, "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization');
+  response.send({msg:'text'})
+  response.end()
+})
 
 app.listen(3000)
-
-
-
