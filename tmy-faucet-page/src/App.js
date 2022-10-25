@@ -7,19 +7,28 @@ function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [userAdress, setUserAdress] = useState("");
   const [userBalance, setUserBalance] = useState("");
-  const [getTmyResult,setTmyResultString] = useState("");
-  const [getTmyRequest,setTmyRequestBool] = useState(false);
+  const [getTmyResult, setTmyResultString] = useState("");
+  const [getTmyRequest, setTmyRequestBool] = useState(false);
+  const [getTxString, setTxString] = useState("");
+  const [getTxBool, setTxBool] = useState(false);
+
+
   async function getTmy() {
-    var response = await fetch('http://localhost:3000/api/send/?address='+{userAdress}.userAdress);
+    setTmyRequestBool(true)
+    var response = await fetch('http://95.105.118.187:3000/api/send/?address=' + { userAdress }.userAdress);
     var json = await response.json()
     var msg = json['msg']
-    setTmyRequestBool(true)
+    if (msg != "Time has not yet passed") {
+      var tx = json['tx']
+      setTxString(tx)
+      setTxBool(true)
+    }
     setTmyResultString(msg)
+  }
 
-  };
-  
-  function openTmyChainSite()
-  {
+
+
+  function openTmyChainSite() {
     window.location.href = 'https://wallet.tmychain.org/#';
   }
 
@@ -88,14 +97,14 @@ function App() {
               </text>
             </div>
 
-            <button  class='row1' style={{
+            <button class='row1' style={{
               backgroundColor: '#283593',
               color: 'white',
               fontSize: '15px',
               borderRadius: '5px',
               padding: '10px 10px',
               cursor: 'pointer',
-              
+
             }} onClick={openTmyChainSite} >
               TMYChain
             </button>
@@ -188,30 +197,47 @@ function App() {
               justifyContent: 'center',
               alignItems: 'center'
             }}>
-              {!getTmyRequest && 
-              <button style=
-                {{
-                  backgroundColor: '#283593',
-                  color: 'white',
-                  fontSize: '15px',
-                  borderRadius: '5px',
-                  padding: '10px 10px',
-                  cursor: 'pointer',
-                  margin: 5
-                }} onClick={getTmy} >
-                Get TMY
-              </button>}
+              {!getTmyRequest &&
+                <button style=
+                  {{
+                    backgroundColor: '#283593',
+                    color: 'white',
+                    fontSize: '15px',
+                    borderRadius: '5px',
+                    padding: '10px 10px',
+                    cursor: 'pointer',
+                    margin: 5
+                  }} onClick={getTmy} >
+                  Get TMY
+                </button>}
 
-              {getTmyRequest && 
-              <text style={{
-                fontSize: 20,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-                Result: {getTmyResult}
-              </text>
+              {getTmyRequest &&
+                <div>
+                  {getTxBool &&
+                    <p><a style={{
+                      fontSize: 20,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      
+                    }} href={getTxString}>Transaction</a></p>
+
+
+                  }
+
+                  <text style={{
+                    fontSize: 20,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                    Result: {getTmyResult}
+                  </text>
+
+                </div>
+
               }
+
             </div>
           </div>
         )}

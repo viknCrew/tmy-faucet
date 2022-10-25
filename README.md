@@ -1,4 +1,5 @@
 # tmy-faucet
+
 Перед запуском сервера нужно создать config.json рядом с файлом server.js
 {
     "mongodbAddress" : "mongodb://localhost:27017/",

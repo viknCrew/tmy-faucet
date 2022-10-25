@@ -29,7 +29,7 @@ async function createCollection() {
   }
 }
 
-async function inputAdress(addressFromRequest) {
+async function inputAdress(addressFromRequest, response) {
   await mgClient.connect()
   const db = mgClient.db("tmyadresses")
   const collection = db.collection("adresses")
@@ -40,8 +40,7 @@ async function inputAdress(addressFromRequest) {
   if (result == null) {
     var mongoAdress = { address: addressFromRequest, createtime: date }
     collection.insertOne(mongoAdress)
-    await sendTmy(addressFromRequest)
-    return "Coins sent"
+    await sendTmy(addressFromRequest, response)
   }
   else {
     var str = JSON.stringify(result)
@@ -51,19 +50,41 @@ async function inputAdress(addressFromRequest) {
 
     dbDate.setHours(dbDate.getHours() + config['timeForGiveaway'])
     //Время сейчас
-    console.log(date)
+    //console.log(date)
     //Время в бд
-    console.log(dbDate)
+    //console.log(dbDate)
 
     if (date > dbDate) {
       collection.updateOne({ address: addressFromRequest }, { $set: { createtime: date } })
-      await sendTmy(addressFromRequest)
-      return "Updated"
+      await sendTmy(addressFromRequest, response)
     }
     else {
-      return "Time has not yet passed"
+      response.send({ msg: "Time has not yet passed" })
+      response.end()
     }
+
   }
+
+}
+
+async function sendTmy(addressFromRequest, response) {
+  var web3 = new Web3(config['nodeAddress'])
+  const createTransaction = await web3.eth.accounts.signTransaction(
+    {
+      from: config['faucetAccount'],
+      gasPrice: "1000000000",
+      gas: "21000",
+      to: addressFromRequest,
+      value: web3.utils.toWei(config['amountOfCoins'], 'ether'),
+      data: ""
+    }
+    , config['faucetAccountPrivateKey']);
+  response.send({
+    msg: "Coins sent",
+    tx: "https://tmyscan.com/tx/" + createTransaction.transactionHash
+  })
+  response.end()
+  const createReceipt = await web3.eth.sendSignedTransaction(createTransaction.rawTransaction);
 
 }
 
@@ -75,22 +96,7 @@ async function checkAdress(addressFromRequest) {
 
 }
 
-async function sendTmy(addressFromRequest) {
-  var web3 = new Web3(config['nodeAddress'])
-  const createTransaction = await web3.eth.accounts.signTransaction(
-    {
-      from: config['faucetAccount'],
-      gasPrice: "10000000000",
-      gas: "21000",
-      to: addressFromRequest,
-      value: web3.utils.toWei(config['amountOfCoins'], 'ether'),
-      data: ""
-    }
-    , config['faucetAccountPrivateKey']);
 
-  const createReceipt = await web3.eth.sendSignedTransaction(createTransaction.rawTransaction);
-  console.log(`Transaction successful with hash: ${createReceipt.transactionHash}`);
-}
 
 
 
@@ -100,20 +106,13 @@ app.get('/api/send', async function (request, response) {
   response.header('Access-Control-Allow-Methods', 'GET');
   response.header('Access-Control-Allow-Headers', 'X-Requested-With, content-type, "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization');
   let addressFromRequest = request.query.address
-  var log = await inputAdress(addressFromRequest)
-  response.send({msg:log})
-  response.end()
+  var log = await inputAdress(addressFromRequest, response)
 })
+
 app.get('/api/createCollection', async function (request, response) {
   await createCollection()
   response.end()
 })
-app.get('/api/test', async function (request, response) {
-  response.header('Access-Control-Allow-Origin', '*');
-  response.header('Access-Control-Allow-Methods', 'GET');
-  response.header('Access-Control-Allow-Headers', 'X-Requested-With, content-type, "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization');
-  response.send({msg:'text'})
-  response.end()
-})
+
 
 app.listen(3000)
