@@ -9,16 +9,19 @@ function App() {
   const [userBalance, setUserBalance] = useState("");
   const [getTmyResult,setTmyResultString] = useState("");
   const [getTmyRequest,setTmyRequestBool] = useState(false);
-
   async function getTmy() {
     var response = await fetch('http://localhost:3000/api/send/?address='+{userAdress}.userAdress);
     var json = await response.json()
     var msg = json['msg']
-    console.log(msg)
-    setTmyResultString(msg)
     setTmyRequestBool(true)
+    setTmyResultString(msg)
 
   };
+  
+  function openTmyChainSite()
+  {
+    window.location.href = 'https://wallet.tmychain.org/#';
+  }
 
   const detectCurrentProvider = () => {
     let provider;
@@ -85,14 +88,15 @@ function App() {
               </text>
             </div>
 
-            <button class='row1' style={{
+            <button  class='row1' style={{
               backgroundColor: '#283593',
               color: 'white',
               fontSize: '15px',
               borderRadius: '5px',
               padding: '10px 10px',
               cursor: 'pointer',
-            }} >
+              
+            }} onClick={openTmyChainSite} >
               TMYChain
             </button>
           </div>
@@ -193,6 +197,7 @@ function App() {
                   borderRadius: '5px',
                   padding: '10px 10px',
                   cursor: 'pointer',
+                  margin: 5
                 }} onClick={getTmy} >
                 Get TMY
               </button>}
@@ -200,7 +205,6 @@ function App() {
               {getTmyRequest && 
               <text style={{
                 fontSize: 20,
-                verticalAlign: "baseline",
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',

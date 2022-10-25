@@ -41,7 +41,7 @@ async function inputAdress(addressFromRequest) {
     var mongoAdress = { address: addressFromRequest, createtime: date }
     collection.insertOne(mongoAdress)
     await sendTmy(addressFromRequest)
-    return "Complete"
+    return "Coins sent"
   }
   else {
     var str = JSON.stringify(result)
