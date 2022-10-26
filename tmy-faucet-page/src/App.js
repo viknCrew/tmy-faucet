@@ -11,6 +11,8 @@ function App() {
   const [getTmyRequest, setTmyRequestBool] = useState(false);
   const [getTxString, setTxString] = useState("");
   const [getTxBool, setTxBool] = useState(false);
+  const [getTimeLeftString, setTimeLeftString] = useState("")
+  const [getTimeLeftBool, setTimeLeftBool] = useState(false)
 
 
   async function getTmy() {
@@ -18,15 +20,17 @@ function App() {
     var response = await fetch('http://95.105.118.187:3000/api/send/?address=' + { userAdress }.userAdress);
     var json = await response.json()
     var msg = json['msg']
-    if (msg != "Time has not yet passed") {
+    if (msg !== "Time has not yet passed") {
       var tx = json['tx']
       setTxString(tx)
       setTxBool(true)
     }
+    else {
+      setTimeLeftString(json['timeForGiveaway'])
+      setTimeLeftBool(true)
+    }
     setTmyResultString(msg)
   }
-
-
 
   function openTmyChainSite() {
     window.location.href = 'https://wallet.tmychain.org/#';
@@ -55,7 +59,7 @@ function App() {
         var balance = await web3.eth.getBalance(userAccount[0])
         var account = userAccount[0]
         setUserAdress(account);
-        setUserBalance(balance)
+        setUserBalance(Web3.utils.fromWei({ balance }.balance, 'ether'))
         setIsConnected(true);
       }
     } catch (err) {
@@ -214,12 +218,19 @@ function App() {
               {getTmyRequest &&
                 <div>
                   {getTxBool &&
-                    <p><a style={{
+                    <p style={{
                       fontSize: 20,
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      
+                      gap: '5px'
+
+                    }}> Go to<a style={{
+                      fontSize: 20,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+
                     }} href={getTxString}>Transaction</a></p>
 
 
@@ -231,8 +242,18 @@ function App() {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                    Result: {getTmyResult}
+                    {getTmyResult}
                   </text>
+
+                  {getTimeLeftBool &&
+                    <text style={{
+                      fontSize: 20,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                      Time until the next receipt of coins : {getTimeLeftString}
+                    </text>}
 
                 </div>
 
