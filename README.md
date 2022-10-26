@@ -1,6 +1,7 @@
 # tmy-faucet
 
 Перед запуском сервера нужно создать config.json рядом с файлом server.js
+```
 {
     "mongodbAddress" : "mongodb://localhost:27017/",
     "mongodbName": "<Имя бд в mongodb>",
@@ -11,3 +12,4 @@
     "amountOfCoins":"0.000005",
     "faucetAccountPrivateKey" : "Приватный ключ аккаунта с которого будут перечисляться монеты"
 }
+```
