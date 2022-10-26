@@ -19,22 +19,24 @@ function App() {
   async function getTmy() {
     if (getChainId !== network.tmy.chainId) {
       await handleNetworkSwitch("tmy")
-      return
-    }
-    setTmyRequestBool(true)
-    var response = await fetch('http://95.105.118.187:3000/api/send/?address=' + { userAdress }.userAdress);
-    var json = await response.json()
-    var msg = json['msg']
-    if (msg !== "Time has not yet passed") {
-      var tx = json['tx']
-      setTxString(tx)
-      setTxBool(true)
     }
     else {
-      setTimeLeftString(json['timeForGiveaway'])
-      setTimeLeftBool(true)
+      setTmyRequestBool(true)
+      var response = await fetch('http://95.105.118.187:3000/api/send/?address=' + { userAdress }.userAdress);
+      var json = await response.json()
+      var msg = json['msg']
+      if (msg !== "Time has not yet passed") {
+        var tx = json['tx']
+        setTxString(tx)
+        setTxBool(true)
+      }
+      else {
+        setTimeLeftString(json['timeForGiveaway'])
+        setTimeLeftBool(true)
+      }
+      setTmyResultString(msg)
     }
-    setTmyResultString(msg)
+
   }
 
   function openTmyChainSite() {
@@ -61,6 +63,9 @@ function App() {
       if (currentProvider) {
         await currentProvider.request({ method: 'eth_requestAccounts' });
         const web3 = new Web3(currentProvider);
+        setChainId(web3.eth.getChainId())
+        var currentChainId = await web3.eth.getChainId()
+        setChainId(`0x${Number(currentChainId).toString(16)}`)
         const userAccount = await web3.eth.getAccounts();
         var balance = await web3.eth.getBalance(userAccount[0])
         var account = userAccount[0]
@@ -113,7 +118,7 @@ function App() {
 
   const networkChanged = (chainId) => {
     console.log({ chainId });
-    setChainId({chainId}.chainId)
+    setChainId({ chainId }.chainId)
   };
 
   useEffect(() => {
