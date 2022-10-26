@@ -55,17 +55,17 @@ async function inputAdress(addressFromRequest, response) {
     //console.log(dbDate)
     //Время через которое можно будет получить монеты
     var timeLeft = new Date(dbDate - date)
-    console.log(timeLeft)
+    //console.log(timeLeft)
 
     if (date > dbDate) {
       collection.updateOne({ address: addressFromRequest }, { $set: { createtime: date } })
       await sendTmy(addressFromRequest, response)
     }
     else {
-      response.send({ 
+      response.send({
         msg: "Time has not yet passed",
         timeForGiveaway: timeLeft.getUTCHours() + ":" + timeLeft.getMinutes() + ":" + timeLeft.getSeconds()
-     })
+      })
       response.end()
     }
 

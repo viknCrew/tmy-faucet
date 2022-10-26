@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import './styles/App.css';
 import Web3 from 'web3';
 
@@ -13,9 +13,14 @@ function App() {
   const [getTxBool, setTxBool] = useState(false);
   const [getTimeLeftString, setTimeLeftString] = useState("")
   const [getTimeLeftBool, setTimeLeftBool] = useState(false)
+  const [getChainId, setChainId] = useState()
 
 
   async function getTmy() {
+    if (getChainId !== network.tmy.chainId) {
+      await handleNetworkSwitch("tmy")
+      return
+    }
     setTmyRequestBool(true)
     var response = await fetch('http://95.105.118.187:3000/api/send/?address=' + { userAdress }.userAdress);
     var json = await response.json()
@@ -52,6 +57,7 @@ function App() {
   const onConnect = async () => {
     try {
       const currentProvider = detectCurrentProvider();
+      await handleNetworkSwitch("tmy")
       if (currentProvider) {
         await currentProvider.request({ method: 'eth_requestAccounts' });
         const web3 = new Web3(currentProvider);
@@ -71,6 +77,52 @@ function App() {
     setIsConnected(false);
   }
 
+  const network = {
+    tmy: {
+      chainId: `0x${Number(8768).toString(16)}`,
+      chainName: "TMY Chain",
+      nativeCurrency: {
+        name: "TMY",
+        symbol: "TMY",
+        decimals: 18
+      },
+      rpcUrls: ["https://node1.tmyblockchain.org/"],
+      blockExplorerUrls: ["https://tmyscan.com"]
+    }
+  };
+
+  const changeNetwork = async ({ networkName }) => {
+    try {
+      if (!window.ethereum) throw new Error("No crypto wallet found");
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [
+          {
+            ...network[networkName]
+          }
+        ]
+      });
+    } catch (err) {
+      console.log(err)
+    }
+  };
+
+  const handleNetworkSwitch = async (networkName) => {
+    await changeNetwork({ networkName });
+  };
+
+  const networkChanged = (chainId) => {
+    console.log({ chainId });
+    setChainId({chainId}.chainId)
+  };
+
+  useEffect(() => {
+    window.ethereum.on("chainChanged", networkChanged);
+
+    return () => {
+      window.ethereum.removeListener("chainChanged", networkChanged);
+    };
+  }, []);
 
   return (
     <div>
