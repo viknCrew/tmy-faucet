@@ -31,8 +31,8 @@ async function createCollection() {
 
 async function inputAdress(addressFromRequest, response) {
   await mgClient.connect()
-  const db = mgClient.db("tmyadresses")
-  const collection = db.collection("adresses")
+  const db = mgClient.db(config['mongodbName'])
+  const collection = db.collection(config['mongodbCollectionName'])
   var result = await checkAdress(addressFromRequest)
 
   var date = new Date()
