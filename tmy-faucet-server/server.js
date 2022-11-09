@@ -18,17 +18,6 @@ loadConfig()
 const url = config['mongodbAddress'];
 const mgClient = new mongo.MongoClient(url);
 
-async function createCollection() {
-  await mgClient.connect()
-  const db = mgClient.db(config['mongodbName'])
-  if (db.databaseName != null) {
-    return
-  }
-  else {
-    const users = db.createCollection(config['mongodbCollectionName'])
-  }
-}
-
 async function inputAdress(addressFromRequest, response) {
   await mgClient.connect()
   const db = mgClient.db(config['mongodbName'])
@@ -96,15 +85,11 @@ async function sendTmy(addressFromRequest, response) {
 
 async function checkAdress(addressFromRequest) {
 
-  const db = mgClient.db('tmyadresses')
-  const collection = db.collection("adresses")
+  const db = mgClient.db(config['mongodbName'])
+  const collection = db.collection(config['mongodbCollectionName'])
   return collection.findOne({ address: addressFromRequest })
 
 }
-
-
-
-
 
 const app = express()
 app.get('/api/send', async function (request, response) {
@@ -113,11 +98,6 @@ app.get('/api/send', async function (request, response) {
   response.header('Access-Control-Allow-Headers', 'X-Requested-With, content-type, "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization');
   let addressFromRequest = request.query.address
   var log = await inputAdress(addressFromRequest, response)
-})
-
-app.get('/api/createCollection', async function (request, response) {
-  await createCollection()
-  response.end()
 })
 
 console.log("Сервер запущен")
