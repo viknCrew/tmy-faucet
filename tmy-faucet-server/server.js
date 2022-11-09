@@ -120,5 +120,5 @@ app.get('/api/createCollection', async function (request, response) {
   response.end()
 })
 
-
-app.listen(3000)
+console.log("Сервер запущен")
+app.listen(3120)
