@@ -22,7 +22,7 @@ function App() {
     }
     else {
       setTmyRequestBool(true)
-      var response = await fetch('http://localhost:3120/api/send/?address=' + { userAdress }.userAdress);
+      var response = await fetch('http://127.0.0.1:3120/api/send/?address=' + { userAdress }.userAdress);
       var json = await response.json()
       var msg = json['msg']
       if (msg !== "Time has not yet passed") {
