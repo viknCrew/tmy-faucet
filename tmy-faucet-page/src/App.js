@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import './styles/App.css';
 import Web3 from 'web3';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Dropdown } from "bootstrap";
 
 function App() {
   const [isConnected, setIsConnected] = useState(false);
@@ -38,7 +39,7 @@ function App() {
     }
 
   }
-
+  
   function openTmyChainSite() {
     window.location.href = 'https://wallet.tmychain.org/#';
   }
@@ -124,6 +125,7 @@ function App() {
 
   useEffect(() => {
     window.ethereum.on("chainChanged", networkChanged);
+    window.ethereum.on("accountsChanged", onConnect);
 
     return () => {
       window.ethereum.removeListener("chainChanged", networkChanged);
@@ -148,10 +150,12 @@ function App() {
             display: 'grid',
             gridTemplateColumns: '10fr  1fr'
           }}>
-            <div >
-              <img src={process.env.PUBLIC_URL + "img/wallet-logo.svg"} alt=" " />
+            <div>
+              <img src={process.env.PUBLIC_URL + "img/wallet-logo.svg"} alt=" " style={{
+                verticalAlign: "baseline",
+              }} />
               <text style={{
-                fontSize: 30,
+                fontSize: 29,
                 marginLeft: 10,
                 verticalAlign: "baseline"
               }}>
