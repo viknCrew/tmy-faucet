@@ -39,7 +39,7 @@ function App() {
     }
 
   }
-  
+
   function openTmyChainSite() {
     window.location.href = 'https://wallet.tmychain.org/#';
   }
@@ -137,20 +137,17 @@ function App() {
       <header style={{
         margin: 80,
       }}>
-        <div style={{
-          padding: 10,
-          borderRadius: 15,
-          border: "solid",
-          borderInlineColor: "#F7F8FC",
-          borderBlockColor: "#F7F8FC",
-          backgroundColor: "#F7F8FC",
-        }}>
+        <div>
 
-          <div class='wrapper' style={{
-            display: 'grid',
-            gridTemplateColumns: '10fr  1fr'
+          <div class="position-relative" style={{
+            padding: 10,
+            borderRadius: 15,
+            border: "solid",
+            borderInlineColor: "#F7F8FC",
+            borderBlockColor: "#F7F8FC",
+            backgroundColor: "#F7F8FC",
           }}>
-            <div>
+            <div class="position top-0 start-0">
               <img src={process.env.PUBLIC_URL + "img/wallet-logo.svg"} alt=" " style={{
                 verticalAlign: "baseline",
               }} />
@@ -162,25 +159,26 @@ function App() {
                 /:Faucet
               </text>
             </div>
-
-            <button class='row1' style={{
-              backgroundColor: '#283593',
-              color: 'white',
-              fontSize: '15px',
-              borderRadius: '5px',
-              padding: '10px 10px',
-              cursor: 'pointer',
-
-            }} onClick={openTmyChainSite} >
-              TMYChain
-            </button>
+            <div class="position-absolute top-0 end-0">
+              <button style={{
+                backgroundColor: '#283593',
+                color: 'white',
+                fontSize: '15px',
+                borderRadius: '5px',
+                padding: '10px 10px',
+                cursor: 'pointer',
+                marginTop: 8,
+                marginRight: 10
+              }} onClick={openTmyChainSite} >
+                TMYChain
+              </button>
+            </div>
           </div>
-
         </div>
       </header>
       <body>
         {!isConnected && (
-          <div className="appLogin" style={{
+          <div style={{
             padding: 10,
             marginTop: 10,
             borderRadius: 15,
@@ -197,7 +195,7 @@ function App() {
               marginTop: 15,
               fontSize: 25,
             }}>
-              <text >
+              <text>
                 Connect with metamask
               </text>
             </div>
@@ -208,8 +206,6 @@ function App() {
               alignItems: 'center',
               gap: '15px'
             }}>
-
-
               <button style=
                 {{
                   backgroundColor: '#283593',
