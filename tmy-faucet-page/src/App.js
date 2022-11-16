@@ -136,7 +136,7 @@ function App() {
       <header style={{
         margin: 80,
         minWidth: 150,
-        maxWidth: 900
+        maxWidth: 1900
       }}>
         <div>
           <div class="position-relative" style={{
@@ -186,7 +186,7 @@ function App() {
             borderInlineColor: "#F7F8FC",
             borderBlockColor: "#F7F8FC",
             backgroundColor: "#F7F8FC",
-            
+
           }}>
             <div style={{
               display: 'flex',
@@ -194,6 +194,8 @@ function App() {
               alignItems: 'center',
               marginBottom: 15,
               marginTop: 15,
+              fontSize: '1.3em'
+
             }}>
               <text>
                 Connect with metamask
@@ -214,6 +216,7 @@ function App() {
                   borderRadius: '5px',
                   padding: '10px 10px',
                   cursor: 'pointer',
+
                 }} onClick={onConnect} >
                 Connect
               </button>
@@ -236,7 +239,7 @@ function App() {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                fontSize: '0.8em'
+                fontSize: '1em'
               }} >
                 Address: {userAdress}
               </text>
