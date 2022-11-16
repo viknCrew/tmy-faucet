@@ -120,9 +120,9 @@ function App() {
   const networkChanged = (chainId) => {
     console.log({ chainId });
     setChainId({ chainId }.chainId)
-    onConnect()
-  };
 
+  };
+  
   useEffect(() => {
     window.ethereum.on("chainChanged", networkChanged);
     window.ethereum.on("accountsChanged", onConnect);
@@ -177,6 +177,7 @@ function App() {
         </div>
       </header>
       <body>
+      
         {!isConnected && (
           <div style={{
             padding: 10,
