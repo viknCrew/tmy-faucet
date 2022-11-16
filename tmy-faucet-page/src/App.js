@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import './styles/App.css';
 import Web3 from 'web3';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Dropdown } from "bootstrap";
 
 function App() {
   const [isConnected, setIsConnected] = useState(false);
@@ -120,9 +119,9 @@ function App() {
   const networkChanged = (chainId) => {
     console.log({ chainId });
     setChainId({ chainId }.chainId)
-
+    onConnect()
   };
-  
+
   useEffect(() => {
     window.ethereum.on("chainChanged", networkChanged);
     window.ethereum.on("accountsChanged", onConnect);
@@ -136,9 +135,10 @@ function App() {
     <div>
       <header style={{
         margin: 80,
+        minWidth: 150,
+        maxWidth: 900
       }}>
         <div>
-
           <div class="position-relative" style={{
             padding: 10,
             borderRadius: 15,
@@ -177,7 +177,6 @@ function App() {
         </div>
       </header>
       <body>
-      
         {!isConnected && (
           <div style={{
             padding: 10,
@@ -187,6 +186,7 @@ function App() {
             borderInlineColor: "#F7F8FC",
             borderBlockColor: "#F7F8FC",
             backgroundColor: "#F7F8FC",
+            
           }}>
             <div style={{
               display: 'flex',
@@ -194,7 +194,6 @@ function App() {
               alignItems: 'center',
               marginBottom: 15,
               marginTop: 15,
-              fontSize: 25,
             }}>
               <text>
                 Connect with metamask
@@ -233,12 +232,12 @@ function App() {
           }}>
             <div>
               <text style={{
-                fontSize: 20,
                 verticalAlign: "baseline",
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-              }}>
+                fontSize: '0.8em'
+              }} >
                 Address: {userAdress}
               </text>
 
