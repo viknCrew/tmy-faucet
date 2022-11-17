@@ -14,6 +14,7 @@ function App() {
   const [getTimeLeftString, setTimeLeftString] = useState("")
   const [getTimeLeftBool, setTimeLeftBool] = useState(false)
   const [getChainId, setChainId] = useState()
+  const [getErrorsBool, setErrorsBool] = useState(false)
 
 
   async function getTmy() {
@@ -22,7 +23,14 @@ function App() {
     }
     else {
       setTmyRequestBool(true)
-      var response = await fetch('http://localhost:3120/api/send/?address=' + { userAdress }.userAdress);
+      try {
+        var response = await fetch('http://localhost:3120/api/send/?address=' + { userAdress }.userAdress);
+      } catch (error) {
+        setTmyResultString("Server connection error")
+        setTmyRequestBool(true)
+        setErrorsBool(true)
+        return;
+      }
       var json = await response.json()
       var msg = json['msg']
       if (msg !== "Time has not yet passed") {
@@ -40,7 +48,7 @@ function App() {
   }
 
   function openTmyChainSite() {
-    window.location.href = 'https://wallet.tmychain.org/#';
+    window.open('https://wallet.tmychain.org/');
   }
 
   const detectCurrentProvider = () => {
@@ -55,7 +63,12 @@ function App() {
     return provider;
   };
 
-  const onConnect = async () => {
+  async function onConnect() {
+    setTimeLeftBool(false)
+    setTxBool(false)
+    setErrorsBool(false)
+    setTmyRequestBool(false)
+    setTmyResultString("")
     try {
       const currentProvider = detectCurrentProvider();
       await handleNetworkSwitch("tmy")
@@ -71,6 +84,7 @@ function App() {
         setUserAdress(account);
         setUserBalance(Web3.utils.fromWei({ balance }.balance, 'ether'))
         setIsConnected(true);
+        setTmyRequestBool(false);
       }
     } catch (err) {
       console.log(err);
@@ -95,7 +109,7 @@ function App() {
     }
   };
 
-  const changeNetwork = async ({ networkName }) => {
+  async function changeNetwork({ networkName }) {
     try {
       if (!window.ethereum) throw new Error("No crypto wallet found");
       await window.ethereum.request({
@@ -137,6 +151,7 @@ function App() {
         minWidth: 150,
         maxWidth: 1900
       }}>
+
         <div>
           <div class="position-relative" style={{
             padding: 10,
@@ -160,10 +175,11 @@ function App() {
             </div>
             <div class="position-absolute top-0 end-0">
               <button style={{
-                backgroundColor: '#283593',
+                backgroundColor: '#6D00F3',
                 color: 'white',
                 fontSize: '15px',
                 borderRadius: '5px',
+                border: '0',
                 padding: '10px 10px',
                 cursor: 'pointer',
                 marginTop: 8,
@@ -209,10 +225,11 @@ function App() {
             }}>
               <button style=
                 {{
-                  backgroundColor: '#283593',
+                  backgroundColor: '#6D00F3',
                   color: 'white',
                   fontSize: '15px',
                   borderRadius: '5px',
+                  border: '0',
                   padding: '10px 10px',
                   cursor: 'pointer',
 
@@ -264,10 +281,11 @@ function App() {
               {!getTmyRequest &&
                 <button style=
                   {{
-                    backgroundColor: '#283593',
+                    backgroundColor: '#6D00F3',
                     color: 'white',
                     fontSize: '15px',
                     borderRadius: '5px',
+                    border: '0',
                     padding: '10px 10px',
                     cursor: 'pointer',
                     margin: 5
@@ -277,7 +295,17 @@ function App() {
 
               {getTmyRequest &&
                 <div>
-                  {getTxBool &&
+
+                  {!getTxBool && !getTimeLeftBool && !getErrorsBool &&
+                    <div class="spinner-border" role="status" style={{
+                      borderTopColor: '#6D00F3',
+                      borderBlockColor: '#6D00F3',
+                      borderLeftColor: '#6D00F3'
+                    }}>
+                      <span class="visually-hidden">Loading...</span>
+                    </div>}
+
+                  {getTxBool && !getErrorsBool &&
                     <p style={{
                       fontSize: 20,
                       display: 'flex',
@@ -285,14 +313,13 @@ function App() {
                       alignItems: 'center',
                       gap: '5px'
 
-                    }}> Go to<a style={{
+                    }}> Go to <a style={{
                       fontSize: 20,
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
 
                     }} href={getTxString}>Transaction</a></p>
-
 
                   }
 
@@ -305,7 +332,7 @@ function App() {
                     {getTmyResult}
                   </text>
 
-                  {getTimeLeftBool &&
+                  {getTimeLeftBool && !getErrorsBool && 
                     <text style={{
                       fontSize: 20,
                       display: 'flex',
