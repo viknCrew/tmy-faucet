@@ -73,13 +73,23 @@ async function sendTmy(addressFromRequest, response) {
       data: ""
     }
     , config['faucetAccountPrivateKey']);
-  response.send({
-    msg: "Coins sent",
-    tx: "https://tmyscan.com/tx/" + createTransaction.transactionHash
-  })
-  response.end()
-  const createReceipt = await web3.eth.sendSignedTransaction(createTransaction.rawTransaction);
+  //const createReceipt = await web3.eth.sendSignedTransaction(createTransaction.rawTransaction);
 
+  await web3.eth.sendSignedTransaction(createTransaction.rawTransaction)
+    .on("receipt",(receipt) => {
+      response.send({
+        msg: "Coins sent",
+        tx: "https://tmyscan.com/tx/" + receipt.transactionHash
+      })
+      response.end()
+    })
+    .on("error", (err) => {
+      response.send({
+        msg: err,
+        error: err.message
+      })
+      response.end()
+    })
 }
 
 async function checkAdress(addressFromRequest) {
@@ -87,7 +97,6 @@ async function checkAdress(addressFromRequest) {
   const db = mgClient.db(config['mongodbName'])
   const collection = db.collection(config['mongodbCollectionName'])
   return collection.findOne({ address: addressFromRequest })
-
 }
 
 const app = express()

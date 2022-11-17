@@ -22,7 +22,7 @@ function App() {
     }
     else {
       setTmyRequestBool(true)
-      var response = await fetch('http://<ip сервера>:3120/api/send/?address=' + { userAdress }.userAdress);
+      var response = await fetch('http://localhost:3120/api/send/?address=' + { userAdress }.userAdress);
       var json = await response.json()
       var msg = json['msg']
       if (msg !== "Time has not yet passed") {
@@ -47,7 +47,6 @@ function App() {
     let provider;
     if (window.ethereum) {
       provider = window.ethereum;
-
     } else if (window.web3) {
       provider = window.web3.currentProvider;
     } else {
