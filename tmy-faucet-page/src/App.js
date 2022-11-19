@@ -24,7 +24,7 @@ function App() {
     else {
       setTmyRequestBool(true)
       try {
-        var response = await fetch('http://localhost:3120/api/send/?address=' + { userAdress }.userAdress);
+        var response = await fetch('https://localhost:3120/api/send/?address=' + { userAdress }.userAdress);
       } catch (error) {
         setTmyResultString("Server connection error")
         setTmyRequestBool(true)
