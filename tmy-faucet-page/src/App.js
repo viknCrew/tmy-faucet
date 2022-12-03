@@ -185,7 +185,7 @@ function App() {
                 marginTop: 8,
                 marginRight: 10
               }} onClick={openTmyChainSite} >
-                TMYChain
+                TMY Chain
               </button>
             </div>
           </div>
