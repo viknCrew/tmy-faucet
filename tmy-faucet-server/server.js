@@ -18,52 +18,64 @@ const url = config['mongodbAddress'];
 const mgClient = new mongo.MongoClient(url);
 
 async function inputAdress(addressFromRequest, response) {
-  await mgClient.connect()
-  const db = mgClient.db(config['mongodbName'])
-  const collection = db.collection(config['mongodbCollectionName'])
-  var result = await checkAdress(addressFromRequest)
 
-  var date = new Date()
-
-  if (result == null) {
-    var mongoAdress = { address: addressFromRequest, createtime: date }
-    collection.insertOne(mongoAdress)
-    await sendTmy(addressFromRequest, response)
-  }
-  else {
-    var str = JSON.stringify(result)
-    var json = JSON.parse(str)
-
-    var dbDate = new Date(json['createtime'])
-
-    dbDate.setHours(dbDate.getHours() + config['timeForGiveaway'])
-    //Время сейчас
-    //console.log(date)
-    //Время в бд
-    //console.log(dbDate)
-    //Время через которое можно будет получить монеты
-    var timeLeft = new Date(dbDate - date)
-    //console.log(timeLeft)
-
-    if (date > dbDate) {
-      collection.updateOne({ address: addressFromRequest }, { $set: { createtime: date } })
+  try {
+    
+    await mgClient.connect()
+    const db = mgClient.db(config['mongodbName'])
+    const collection = db.collection(config['mongodbCollectionName'])
+    var result = await checkAdress(addressFromRequest)
+  
+    var date = new Date()
+  
+    if (result == null) {
+      var mongoAdress = { address: addressFromRequest, createtime: date }
+      collection.insertOne(mongoAdress)
       await sendTmy(addressFromRequest, response)
     }
     else {
-      response.send({
-        msg: "Time has not yet passed",
-        timeForGiveaway: timeLeft.getUTCHours() + ":" + timeLeft.getMinutes() + ":" + timeLeft.getSeconds()
-      })
-      response.end()
-    }
+      var str = JSON.stringify(result)
+      var json = JSON.parse(str)
+  
+      var dbDate = new Date(json['createtime'])
+  
+      dbDate.setHours(dbDate.getHours() + config['timeForGiveaway'])
+      //Время сейчас
+      //console.log(date)
+      //Время в бд
+      //console.log(dbDate)
+      //Время через которое можно будет получить монеты
+      var timeLeft = new Date(dbDate - date)
+      //console.log(timeLeft)
+  
+      if (date > dbDate) {
+        collection.updateOne({ address: addressFromRequest }, { $set: { createtime: date } })
+        await sendTmy(addressFromRequest, response)
+      }
+      else {
+        response.send({
+          msg: "Time has not yet passed",
+          timeForGiveaway: timeLeft.getUTCHours() + ":" + timeLeft.getMinutes() + ":" + timeLeft.getSeconds()
+        })
+        response.end()
+      }
+    }  
 
+
+  } catch (error) {
+    response.send({
+      msg: error.message
+    })
+    response.end()
+  }
+    
   }
 
-}
+
 
 async function sendTmy(addressFromRequest, response) {
   var web3 = new Web3(config['nodeAddress'])
-  try {
+  
     const createTransaction = await web3.eth.accounts.signTransaction(
       {
         from: config['faucetAccount'],
@@ -91,12 +103,7 @@ async function sendTmy(addressFromRequest, response) {
         })
         response.end()
       })
-  } catch (error) {
-    response.send({
-      msg: error.message
-    })
-    response.end()
-  }
+  
   
 }
 
