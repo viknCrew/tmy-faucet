@@ -51,6 +51,7 @@ async function inputAdress(addressFromRequest, response) {
           msg: "Time has not yet passed",
           timeForGiveaway: timeLeft.getUTCHours() + ":" + timeLeft.getMinutes() + ":" + timeLeft.getSeconds()
         })
+        return;
       }
     }
 
@@ -58,11 +59,8 @@ async function inputAdress(addressFromRequest, response) {
     response.send({
       msg: error.message
     })
+    return;
   }
-  finally {
-    response.end()
-  }
-
 }
 
 async function sendTmy(addressFromRequest, response) {
@@ -86,17 +84,20 @@ async function sendTmy(addressFromRequest, response) {
           msg: "Coins sent",
           tx: "https://tmyscan.com/tx/" + receipt.transactionHash
         })
+        return;
       })
       .on("error", (err) => {
         response.send({
           msg: err,
           error: err.message
         })
+        return;
       })
   } catch (error) {
     response.send({
       msg: error.message
     })
+    return;
   }
 
 }
