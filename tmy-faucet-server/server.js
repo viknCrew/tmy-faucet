@@ -98,9 +98,6 @@ async function sendTmy(addressFromRequest, response) {
       msg: error.message
     })
   }
-  finally {
-    response.end()
-  }
 
 }
 
