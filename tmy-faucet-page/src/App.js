@@ -24,7 +24,7 @@ function App() {
     else {
       setTmyRequestBool(true)
       try {
-        var response = await fetch('https://localhost:3121/api/send?address=' + { userAdress }.userAdress);
+        var response = await fetch('https://faucet.tmychain.org/api/send?address=' + { userAdress }.userAdress);
       } catch (error) {
         setTmyResultString("Server connection error")
         setTmyRequestBool(true)
